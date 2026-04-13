@@ -1,3 +1,7 @@
 #!/bin/bash
 cd Backend
-gunicorn wsgi:application --bind 0.0.0.0:$PORT --worker-class eventlet --workers 1 --timeout 120
+.venv/bin/gunicorn wsgi:application \
+  --worker-class eventlet \
+  --workers 1 \
+  --bind 0.0.0.0:$PORT \
+  --timeout 120
