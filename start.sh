@@ -1,3 +1,6 @@
-source /app/.venv/bin/activate
+#!/bin/bash
+
 cd Backend
-gunicorn wsgi:application --bind 0.0.0.0:$PORT --worker-class eventlet --workers 1 --timeout 120
+. .venv/bin/activate
+
+gunicorn -k gevent -w 1 app:app --bind 0.0.0.0:$PORT
