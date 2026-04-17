@@ -67,7 +67,9 @@ def create_app(config=None) -> Flask:
 
 
 def _init_extensions(app: Flask) -> None:
-    db.init_app(app)
+    # Only initialize SQLAlchemy if DATABASE_URL is configured
+    if app.config.get("SQLALCHEMY_DATABASE_URI"):
+        db.init_app(app)
     jwt.init_app(app)
     bcrypt.init_app(app)
     limiter.init_app(app)
@@ -144,7 +146,9 @@ def _register_error_handlers(app: Flask) -> None:
 
     @app.errorhandler(500)
     def internal_error(e):
-        db.session.rollback()
+        # Only rollback if SQLAlchemy is initialized
+        if 'db' in globals() and db.session:
+            db.session.rollback()
         structlog.get_logger().error("internal_error", error=str(e))
         return jsonify({"error": "Internal server error"}), 500
 
