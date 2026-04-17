@@ -21,7 +21,8 @@ class BaseConfig:
     JSON_SORT_KEYS = False
 
     # ── Database ──────────────────────────────────────────────────────────────
-    SQLALCHEMY_DATABASE_URI: str = os.environ["DATABASE_URL"]
+    # Optional: PostgreSQL via SQLAlchemy (not needed if using Supabase only)
+    SQLALCHEMY_DATABASE_URI: str = os.getenv("DATABASE_URL", "")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {
         "pool_size": int(os.getenv("DB_POOL_SIZE", 20)),
@@ -97,9 +98,7 @@ class DevelopmentConfig(BaseConfig):
 
 class TestingConfig(BaseConfig):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.getenv(
-        "DATABASE_URL_TEST", "sqlite:///:memory:"
-    )
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL_TEST", "sqlite:///:memory:")
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=5)
     BCRYPT_LOG_ROUNDS = 4
     WTF_CSRF_ENABLED = False
